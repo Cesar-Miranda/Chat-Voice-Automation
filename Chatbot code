@@ -1,0 +1,236 @@
+# Imports
+import speech_recognition as sr
+import pyttsx3
+import pywhatkit
+import datetime
+import wikipedia
+import pyjokes
+import os
+import warnings
+import pyautogui
+import shutil
+
+# BASIC FUNCTIONS
+
+warnings.filterwarnings('ignore')
+
+# Listener
+listener = sr.Recognizer()
+engine = pyttsx3.init()
+voices = engine.getProperty('voices')
+engine.setProperty('voice', voices[0].id)
+
+
+# Talk
+def talk(text):
+    engine.say(text)
+    engine.runAndWait()
+
+
+# Wake word
+def wake_word(text):
+    keywords = ['hey', 'james']
+    text = text.lower()
+    for phrase in keywords:
+        if phrase in text:
+            return True
+    return False
+
+
+# take wake word
+def take_wake_word():
+    while True:
+        try:
+            with sr.Microphone() as source:
+                listener.adjust_for_ambient_noise(source, duration=0.2)
+                voice = listener.listen(source, phrase_time_limit=2)
+                command = listener.recognize_google(voice, )
+                command = command.lower()
+                return command
+        except sr.UnknownValueError:
+            pass
+        except sr.RequestError:
+            print("Something went wrong, sir.")
+            talk("Something went wrong, sir.")
+
+
+# take command
+def take_command():
+    while True:
+        try:
+            with sr.Microphone() as source:
+                listener.adjust_for_ambient_noise(source, duration=0.2)
+                voice = listener.listen(source, phrase_time_limit=7)
+                command = listener.recognize_google(voice, )
+                command = command.lower()
+                if 'james' in command:
+                    command = command.replace('james', '')
+                return command
+        except sr.UnknownValueError:
+            pass
+        except sr.RequestError:
+            print("Something went wrong, sir.")
+            talk("Something went wrong, sir.")
+
+
+# SKILLS
+
+
+# Shutdown the computer
+def shutdown(text):
+    shutdown_words = ['turn off', 'shutdown', 'shut down']
+    for phrase in shutdown_words:
+        if phrase in text:
+            print("Do you really want to turn this computer off, sir?")
+            talk("Do you really want to turn this computer off, sir?")
+            choice = take_command()
+            if "yes" in choice:
+                print("Shutting down in a few seconds...")
+                talk("Shutting down in a few seconds...")
+                os.system("shutdown /s /t 30")
+            elif "no" in choice:
+                print("Okay, sir.")
+                talk("Okay, sir.")
+                break
+    # for fast shutdown
+    if 'night james' in text:
+        print("Good night, sir.")
+        talk("Good night, sir.")
+        os.system("shutdown /s /t 3")
+
+
+# Opening video on youtube
+def playing(self):
+    video = self.replace('play', '')
+    video = video.replace('charlie', '')
+    talk('playing ' + video + ' sir')
+    pywhatkit.playonyt(video)
+
+
+# Pausing videos.
+def resume_pause():
+    pyautogui.hotkey("playpause")
+    talk("It's done, sir.")
+
+
+# volume down
+def volume_down():
+    for i in range(1, 20):
+        pyautogui.hotkey("volumedown")
+
+
+# volume up
+def volume_up():
+    for i in range(1, 20):
+        pyautogui.hotkey("volumeup")
+
+
+# Searching on Wikipedia
+def search_wiki(self):
+    research = self.replace('search for', '')
+    info = wikipedia.summary(research, 2)
+    print("This is what I found about " + research + " sir:" + info)
+    talk("This is what I found about " + research + " sir: " + info)
+
+
+# Telling the Hour
+def what_hour():
+    hour = datetime.datetime.now().strftime('%I:%M %p')
+    talk("It's is " + hour + " sir")
+
+
+# Open game on steam
+def brawlhalla():
+    os.startfile("steam://rungameid/291550")
+    talk("Openning Brawlhalla, Sir.")
+
+
+# open mail
+def open_mail():
+    pyautogui.hotkey("win")
+    pyautogui.write("mail")
+    pyautogui.press("enter")
+    talk("Opening e-mail, sir.")
+
+
+def close_window():
+    pyautogui.hotkey("alt", "f4")
+    talk("window closed, sir.")
+
+
+# take a screen shot
+def screenshot():
+    hour = datetime.datetime.now().strftime('%b_%d_%Y__%H_%M_%S')
+    pyautogui.screenshot(f"screenshot_{hour}.png")
+    source = f"screenshot_{hour}.png"
+    destination = "C:\\Users\Cesar\\Pictures\\Saved Pictures"
+    shutil.move(source, destination)
+    talk("screen printed, sir")
+
+
+# Core of commands
+def run_james(order):
+    command = order
+    if 'play' in command:
+        playing(command)
+    elif 'time' in command:
+        what_hour()
+    elif 'search for' in command:
+        search_wiki(command)
+    elif 'joke' in command:
+        talk(pyjokes.get_joke())
+    elif shutdown(command):
+        shutdown(command)
+    elif "volume up" in command:
+        volume_up()
+    elif "volume down" in command:
+        volume_down()
+    elif ("screen" or "shot" or "screenshot") in command:
+        screenshot()
+    elif ("pause" or "resume") in command:
+        resume_pause()
+    elif "game" in command:
+        brawlhalla()
+    elif "open mail" in command:
+        open_mail()
+    elif "close" in command:
+        close_window()
+    else:
+        talk("Sorry, I didn't understand what you said.")
+
+
+# Running James
+def running_james():
+    print("I'm listening, sir...")
+    talk("I'm listening, sir...")
+    command = take_command()
+    if "rest" in command:
+        talk("Okay, sir.")
+        pass
+    elif "rest" not in command:
+        run_james(command)
+        talk("Anything else, sir?")
+        repeat = take_command()
+        while "yes" in repeat:
+            print("I'm Listening...")
+            talk("I'm Listening...")
+            command = take_command()
+            run_james(command)
+            talk("Anything else, sir?")
+            repeat = take_command()
+        if "no" in repeat:
+            print("Okay, sir.")
+            talk("Okay, sir.")
+            pass
+
+
+# James Execution
+while True:
+    # taking the wake word
+    call = take_wake_word()
+
+    # fast shutdown
+    if shutdown(call):
+        shutdown(call)
+    elif wake_word(call):
+        running_james()
