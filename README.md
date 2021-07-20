@@ -3,29 +3,32 @@ __This script was built for personal demands, it helps me to work/have fun, do s
 
 The biggest advantage of having James is the possibility to do personalize it, which can make it more useful than the normal assistants are.
 
+When running, the assistant will keep itself running fast cycles of 2 seconds hearing for the wake-up word. "Hey, James", "James" or just "Hey" can be used to call him. He will respond "I'm listening, sir" and then wait for the command for 8 seconds (this limitation was created because it kept itself lost hearing louder noises).
 
 **- Bellow, some of its implemented functions:**
-1. play videos on youtube
-2. tell the hour
-3. sarch for something or someoneone wikipedia
-4. tell a joke
-5. turn the computer off
-6. volume up
-7. volume down
-8. close window
-9. switch window
-10. open mail
-11. close tab
-12. take a screenshot and save it in a chosen directory with date/time as name.
-13. full screen a video
-14. pause
-15. resume
-16. open my favorite game
-17. set up my daily work-portals
-18. tell me the dolar, canadian dolar, euro, cny, bitcoin and ethereum quotation
-19. tell me all commands
-20. tell me the weather today
-
+(keyowrds commands in parenthesis)
+1. play videos on youtube ('play + name of the video')
+2. tell the hour ('time')
+3. sarch for something or someoneone wikipedia ('search for')
+4. tell a joke ('joke')
+5. turn the computer off ('turn off')
+6. volume up ('volume up')
+7. volume down ('volume down')
+8. close window ('close window')
+9. switch window ('switch window')
+10. open mail ('mail')
+11. close tab ('kill tab')
+12. take a screenshot and save it in a chosen directory with date/time as name. ('screenshot')
+13. full screen a video ('full mode')
+14. pause ('pause')
+15. resume ('resume')
+16. open my favorite game ('game')
+17. set up my daily work-portals ('set up'/'start')
+18. tell me the dolar, canadian dolar, euro, cny, bitcoin and ethereum quotation ('quotation + canadian/bitcoin/chinese/american/ethereum/euro or just 'quotation' to get them all)
+19. tell me all commands ('tell me all commands')
+20. tell me the weather today ('weather' + 'today')
+21. read the news in portuguese or english. ('news' + subject + 'english/portuguese')
+22. Bright control ('light up/light down')
 
 **- Bellow, functions to be implemented in the nexts versions:**
 1. AI conversation with pytorch.
