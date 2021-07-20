@@ -3,7 +3,7 @@ __This script was built for personal demands, it helps me to work/have fun, do s
 
 The biggest advantage of having James is the possibility to do personalize it, which can make it more useful than the normal assistants are.
 
-When running, the assistant will keep itself running fast cycles of 2 seconds hearing for the wake-up word. "Hey, James", "James" or just "Hey" can be used to call him. He will respond "I'm listening, sir" and then wait for the command for 8 seconds (this limitation was created because it kept itself lost hearing louder noises).
+When running, the assistant will keep himself running fast cycles of 2 seconds, waiting for the wake-up word. "Hey, James", "James" or just "Hey" can be used to call for him. He will respond "I'm listening, sir" and then wait for the command for 8 seconds (this limitation was created because it kept itself lost hearing louder noises). After the command he will ask for another command. If denied, he'll go back for the fast cycles of 2 seconds.
 
 **- Bellow, some of its implemented functions:**
 (keyowrds commands in parenthesis)
