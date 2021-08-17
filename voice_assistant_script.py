@@ -22,11 +22,9 @@ from scrapy.crawler import CrawlerProcess
 from pandas_datareader import data as web
 from GoogleNews import GoogleNews
 from googletrans import Translator
-# import matplotlib.pyplot as plt
-# import win32com.client
 
 
-# [BASIC FUNCTIONS]
+# BASIC FUNCTIONS
 
 warnings.filterwarnings('ignore')
 
@@ -66,8 +64,8 @@ def take_wake_word():
         except sr.UnknownValueError:
             pass
         except sr.RequestError:
-            print("Something went wrong, sir.")
             talk("Something went wrong, sir.")
+            time.sleep(10)
 
 
 # take command
@@ -85,13 +83,14 @@ def take_command():
         except sr.UnknownValueError:
             pass
         except sr.RequestError:
-            print("Something went wrong, sir.")
             talk("Something went wrong, sir.")
+            time.sleep(10)
 
 
 # [SKILLS]
 
-# weather today - scrapy crawls css selectors of weather.com
+
+# weather today
 def weather(command):
     if "today" in command:
         class WeatherSpider(scrapy.Spider):
@@ -104,28 +103,77 @@ def weather(command):
                 items = {}
                 temperature_now = response.css('span.CurrentConditions--tempValue--1RYJJ::text').extract()
                 temperature_now_in_celsius = temperature_now[0]
-
                 temperature_now_in_celsius = (int(temperature_now_in_celsius[:2]) - 32) * 5 / 9
+                hour_of_command = datetime.datetime.now().strftime('%I:%M %p')
+                day_of_command = datetime.datetime.now().strftime('%b_%d_%Y')
                 weather_now = str(response.css('div.CurrentConditions--phraseValue--17s79::text').extract())
                 str_temperature_now_in_celsius = str(temperature_now_in_celsius)
                 str_weather_now = str(weather_now)
                 items['temperature_now'] = temperature_now_in_celsius
                 items['weather_now'] = weather_now
+                items['hour'] = hour_of_command
+                items['day'] = day_of_command
                 yield items
                 talk(
                     'In Salvador, the temperature is ' + str_temperature_now_in_celsius[:3]
-                    + ' and the weather is: ' + str_weather_now)
+                    + ' celsius and the weather is: ' + str_weather_now)
+        process = CrawlerProcess(settings={
+            'FEED_URI': 'weather.csv',
+            'FEED_FORMAT': 'csv'
+        })
 
-    process = CrawlerProcess(settings = {
-        'FEED_URI': 'weather.csv',
-        'FEED_FORMAT': 'csv'
-    })
+        process.crawl(WeatherSpider)
+        process.start()
 
-    process.crawl(WeatherSpider)
-    process.start()
+    elif "night" in command:
+        class WeatherSpider(scrapy.Spider):
+            name = 'weather'
+
+            def start_requests(self):
+                yield scrapy.Request('https://weather.com/weather/today/l/-12.98,-38.50?par=google')
+
+            def parse(self, response):
+                items = {}
+                temperature_now = response.css('span.CurrentConditions--tempValue--1RYJJ::text').extract()
+                temperature_now_in_celsius = temperature_now[0]
+                temperature_now_in_celsius = (int(temperature_now_in_celsius[:2]) - 32) * 5 / 9
+                hour_of_command = datetime.datetime.now().strftime('%I:%M %p')
+                day_of_command = datetime.datetime.now().strftime('%b_%d_%Y')
+                weather_now = str(response.css('div.CurrentConditions--phraseValue--17s79::text').extract())
+                str_temperature_now_in_celsius = str(temperature_now_in_celsius)
+                str_weather_now = str(weather_now)
+                items['temperature_now'] = temperature_now_in_celsius
+                items['weather_now'] = weather_now
+                items['hour'] = hour_of_command
+                items['day'] = day_of_command
+                yield items
+                talk(
+                    'In Salvador, the temperature is ' + str_temperature_now_in_celsius[:3]
+                    + ' celsius and the weather is: ' + str_weather_now)
+        process = CrawlerProcess(settings={
+            'FEED_URI': 'weather.csv',
+            'FEED_FORMAT': 'csv'
+        })
+
+        process.crawl(WeatherSpider)
+        process.start()
 
 
-# Shutdown the computer - os 
+"""    elif "evening" in command:
+    elif "tomorrow morning" in command:
+    elif "tomorrow night" in command:
+    elif "tomorrow afternoon" in command:
+    elif "tomorrow" in command:
+    elif "monday" in command:
+    elif "tuesday" in command:
+    elif "wednesday" in command:
+    elif "thursday" in command:
+    elif "friday" in command:
+    elif "saturday" in command:
+    elif "sunday" in command:
+    """
+
+# Shutdown the computer
 def shutdown(text):
     shutdown_words = ['turn off', 'good night', 'see you later']
     for phrase in shutdown_words:
@@ -152,8 +200,8 @@ def shutdown(text):
 # Opening youtube
 def playing(self):
     video = self.replace('play', '')
-    video = video.replace('charlie', '')
-    talk('playing ' + video + ' sir')
+    video = video.replace('James', '')
+    talk('playing ' + video)
     pywhatkit.playonyt(video)
 
 
@@ -165,10 +213,9 @@ def full_screen():
 # Pausing videos.
 def resume_pause():
     pyautogui.hotkey("playpause")
-    talk("It's done, sir.")
 
 
-# volume down/up
+# volume down
 def volume_control(text):
     if "down" in text:
         for i in range(1, 20):
@@ -190,70 +237,74 @@ def light_control(text):
     methods.WmiSetBrightness(brightness, 0)
 
 
+# speed up video
+# next video
+# download video from yt
+
+
 # Searching on Wikipedia
 def search_wiki(self):
     research = self.replace('search for', '')
     info = wikipedia.summary(research, 2)
-    print("This is what I found about " + research + " sir:" + info)
     talk("This is what I found about " + research + " sir: " + info)
 
 
 # Telling the Hour
 def what_hour():
     hour = datetime.datetime.now().strftime('%I:%M %p')
-    talk("It's is " + hour + " sir")
+    talk("It's is " + hour)
 
 
 # Open game on steam
 def brawlhalla():
     os.startfile("steam://rungameid/291550")
-    talk("Openning Brawlhalla, Sir.")
+    talk("Openning Brawlhalla.")
 
 
-# [Mail tasks - windows app]
+# [Mail tasks]
 def open_mail():
     pyautogui.hotkey("win")
     pyautogui.write("mail")
     time.sleep(2)
     pyautogui.press("enter")
-    talk("Opening e-mail, sir.")
+    talk("E-mail is ready")
 
 
 # windows and tabs management
 def close_window():
     pyautogui.hotkey("alt", "f4")
-    talk("window closed, sir.")
+    talk("window closed")
 
 
 def kill_tab():
     pyautogui.hotkey("ctrl", "f4")
-    talk("tab closed, sir.")
+    talk("tab closed")
 
 
 def switch_window():
     pyautogui.hotkey("alt", "tab")
-    talk("window, switched, sir")
+    talk("window, switched")
 
 
-# take a screen shot - saving the screen in a chosen directory with date and time registered in its name.
+# take a screen shot
 def screenshot():
     hour = datetime.datetime.now().strftime('%b_%d_%Y__%H_%M_%S')
     pyautogui.screenshot(f"screenshot_{hour}.png")
     source = f"screenshot_{hour}.png"
     destination = "C:\\Users\Cesar\\Pictures\\Saved Pictures"
     shutil.move(source, destination)
-    talk("screen printed, sir")
+    talk("screen printed.")
 
 
-# work setups - setting up my daily worksites without the need of opening them one by one.
+# work setups
 def kumon():
     first = True
     os.startfile("C:\Program Files\Google\Chrome\Application\chrome.exe")
     urls = (
-        "url of choice...", # hidden for privacy
-        "url of choice...",
-        "url of choice...",
-        "url of choice..."
+        "https://...",
+        "http://...",
+        "http://...",
+        "http://..."
     )
     for url in urls:
         if first:
@@ -265,18 +316,18 @@ def kumon():
     pyautogui.hotkey("ctrl", "1")
     time.sleep(2)
     pyautogui.hotkey("ctrl", "f4")
-    talk("Kumon setup is ready, sir.")
+    talk("Kumon setup is ready.")
 
 
 def desenvolver():
     first = True
     os.startfile("C:\Program Files\Google\Chrome\Application\chrome.exe")
     urls = (
-        "url of choice...",
-        "url of choice...",
-        "url of choice...",
-        "url of choice...",
-        "url of choice..."
+        "https://...",
+        "https://...",
+        "http://...",
+        "https://...,
+        "https://..."
     )
     for url in urls:
         if first:
@@ -288,10 +339,10 @@ def desenvolver():
     pyautogui.hotkey("ctrl", "1")
     time.sleep(2)
     pyautogui.hotkey("ctrl", "f4")
-    talk("Desenvolver setup is ready, sir.")
+    talk("Desenvolver setup is ready.")
 
 
-# today's quotations - request to quotation api (Dol, Cad, Eur, Cny, Bit and Eth)
+# today's quotations
 def get_quotation(text):
     quotation = requests.get("https://economia.awesomeapi.com.br/last/CAD-BRL,USD-BRL,EUR-BRL,CNY-BRL,BTC-BRL,ETH-BRL")
     quotation = quotation.json()
@@ -322,7 +373,7 @@ def get_quotation(text):
             i += 1
 
 
-# News reading - google_news lib + googgle_trans lib = news in english and portuguese
+# News reading
 def news(text):
     text = text.replace('news', "")
     if "tell me" in text:
@@ -377,8 +428,8 @@ def news(text):
 
 # tell me all the commands
 def tell_me_all_commands():
-    print("""
-        weather today
+    print(""" Those are the commands you can use:
+        weather
         play
         time
         search for
@@ -402,12 +453,10 @@ def tell_me_all_commands():
         set up kumon
         start desenvolver mais
         quotation
-        news about something in english
-        news about something in portuguese
         tell me all commands
     """)
-    talk("""
-        weather today
+    talk("""Those are the commands you can use:
+        weather
         play
         time
         search for
@@ -432,8 +481,6 @@ def tell_me_all_commands():
         start desenvolver mais
         quotation
         tell me all commands
-        news about something in english
-        news about something in portuguese
   """)
 
 
@@ -441,47 +488,110 @@ def tell_me_all_commands():
 def run_james(order):
     command = order
     if 'weather' in command:
-        weather(command)
+        try:
+            weather(command)
+        except:
+            talk('Sorry, this function is unavailable at the moment')
     elif 'play' in command:
-        playing(command)
+        try:
+            playing(command)
+        except:
+            talk('Sorry, this function is unavailable at the moment')
     elif ('time' or 'hour') in command:
-        what_hour()
+        try:
+            what_hour()
+        except:
+            talk('Sorry, this function is unavailable at the moment')
     elif 'search for' in command:
-        search_wiki(command)
+        try:
+            search_wiki(command)
+        except:
+            talk('Sorry, this function is unavailable at the moment')
     elif 'joke' in command:
-        talk(pyjokes.get_joke())
+        try:
+            talk(pyjokes.get_joke())
+        except:
+            talk('Sorry, this function is unavailable at the moment')
     elif shutdown(command):
-        shutdown(command)
+        try:
+            shutdown(command)
+        except:
+            talk('Sorry, this function is unavailable at the moment')
     elif "volume" in command:
-        volume_control(command)
+        try:
+            volume_control(command)
+        except:
+            talk('Sorry, this function is unavailable at the moment')
     elif "light" in command:
-        light_control(command)
+        try:
+            light_control(command)
+        except:
+            talk('Sorry, this function is unavailable at the moment')
     elif ("screen" or "shot" or "screenshot") in command:
-        screenshot()
+        try:
+            screenshot()
+        except:
+            talk('Sorry, this function is unavailable at the moment')
     elif ("resume" or "pause") in command:
-        resume_pause()
+        try:
+            resume_pause()
+        except:
+            talk('Sorry, this function is unavailable at the moment')
     elif "game" in command:
-        brawlhalla()
+        try:
+            brawlhalla()
+        except:
+            talk('Sorry, this function is unavailable at the moment')
     elif "open mail" in command:
-        open_mail()
+        try:
+            open_mail()
+        except:
+            talk('Sorry, this function is unavailable at the moment')
     elif "close" in command:
-        close_window()
-    elif ("kill" or "tab") in command:
-        kill_tab()
+        try:
+            close_window()
+        except:
+            talk('Sorry, this function is unavailable at the moment')
+    elif "kill tab" in command:
+        try:
+            kill_tab()
+        except:
+            talk('Sorry, this function is unavailable at the moment')
     elif "switch window" in command:
-        switch_window()
+        try:
+            switch_window()
+        except:
+            talk('Sorry, this function is unavailable at the moment')
     elif ('set up' or 'kumon') in command:
-        kumon()
+        try:
+            kumon()
+        except:
+            talk('Sorry, this function is unavailable at the moment')
     elif ('start' or 'desenvolver' or 'mais') in command:
-        desenvolver()
+        try:
+            desenvolver()
+        except:
+            talk('Sorry, this function is unavailable at the moment')
     elif "quotation" in command:
-        get_quotation(command)
+        try:
+            get_quotation(command)
+        except:
+            talk('Sorry, this function is unavailable at the moment')
     elif "news" in command:
-        news(command)
+        try:
+            news(command)
+        except:
+            talk('Sorry, this function is unavailable at the moment')
     elif 'commands' in command:
-        tell_me_all_commands()
+        try:
+            tell_me_all_commands()
+        except:
+            talk('Sorry, this function is unavailable at the moment')
     elif "full" in command:
-        full_screen()
+        try:
+            full_screen()
+        except:
+            talk('Sorry, this function is unavailable at the moment')
     else:
         talk("Sorry, I didn't understand what you said.")
 
@@ -521,6 +631,9 @@ def james_exec():
         # fast shutdown
         if shutdown(call):
             shutdown(call)
+        elif "take a nap" in call:
+            talk('See you later, sir.')
+            quit()
         elif wake_word(call):
             running_james()
 
@@ -528,5 +641,8 @@ def james_exec():
 # Main
 if __name__ == '__main__':
     while True:
-        james_exec()
-        os.execv(james_bot.py, sys.argv)
+        try:
+            james_exec()
+            os.execv(james_bot.py, sys.argv)
+        except:
+            talk('Reconnecting, sir.')
