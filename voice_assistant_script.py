@@ -43,7 +43,7 @@ def talk(text):
 
 # Wake word
 def wake_word(text):
-    keywords = ['hey', 'james']
+    keywords = ['hey james', 'james']
     text = text.lower()
     for phrase in keywords:
         if phrase in text:
