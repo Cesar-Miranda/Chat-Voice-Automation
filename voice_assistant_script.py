@@ -341,6 +341,12 @@ def desenvolver():
     pyautogui.hotkey("ctrl", "f4")
     talk("Desenvolver setup is ready.")
 
+# conveniences
+def gkeep():
+    url = "https://keep.google.com/u/0/"
+    webbrowser.open(url, new=1)
+    talk("Google Keep is ready.")
+
 
 # today's quotations
 def get_quotation(text):
@@ -592,6 +598,11 @@ def run_james(order):
             full_screen()
         except:
             talk('Sorry, this function is unavailable at the moment')
+    elif "open notes" in command:
+        try:
+            gkeep()
+        except:
+            talk('Sorry, this function is unavailable at the moment')
     else:
         talk("Sorry, I didn't understand what you said.")
 
@@ -643,6 +654,5 @@ if __name__ == '__main__':
     while True:
         try:
             james_exec()
-            os.execv(james_bot.py, sys.argv)
         except:
             talk('Reconnecting, sir.')
