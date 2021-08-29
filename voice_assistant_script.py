@@ -22,7 +22,10 @@ from scrapy.crawler import CrawlerProcess
 from pandas_datareader import data as web
 from GoogleNews import GoogleNews
 from googletrans import Translator
-
+from PIL import ImageGrab
+import numpy as np
+import cv2
+from win32api import GetSystemMetrics
 
 # BASIC FUNCTIONS
 
@@ -347,6 +350,40 @@ def gkeep():
     webbrowser.open(url, new=1)
     talk("Google Keep is ready.")
 
+def screen_recorder():
+    talk('Pause with P key when needed. Five seconds to start.')
+    talk('five')
+    time.sleep(1)
+    talk('four')
+    time.sleep(1)
+    talk('three')
+    time.sleep(1)
+    talk('two')
+    time.sleep(1)
+    talk('one')
+    time.sleep(1)
+    talk('now')
+
+    width = GetSystemMetrics(0)
+    height = GetSystemMetrics(1)
+    day_hour = datetime.datetime.now().strftime('%b_%d_%Y__%H_%M_%S')
+    fourcc = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
+    captured_video = cv2.VideoWriter(f'Screen Record - {day_hour}.mp4', fourcc, 20.0, (width, height))
+
+    while True:
+        img = ImageGrab.grab(bbox=(0, 0, width, height,))
+        img_np = np.array(img)
+        img_final = cv2.cvtColor(img_np, cv2.COLOR_BGR2RGB)
+        cv2.imshow('Secret Capture', img_final)
+        captured_video.write(img_final)
+        if cv2.waitKey(10) == ord('p'):
+            break
+
+    source = f"Screen Record - {day_hour}.mp4"
+    destination = "C:\\Users\Cesar\\Videos\\Captures"
+    shutil.move(source, destination)
+
+
 
 # today's quotations
 def get_quotation(text):
@@ -533,7 +570,7 @@ def run_james(order):
             light_control(command)
         except:
             talk('Sorry, this function is unavailable at the moment')
-    elif ("screen" or "shot" or "screenshot") in command:
+    elif ("screenshot") in command:
         try:
             screenshot()
         except:
@@ -601,6 +638,11 @@ def run_james(order):
     elif "open notes" in command:
         try:
             gkeep()
+        except:
+            talk('Sorry, this function is unavailable at the moment')
+    elif "record the screen" in command:
+        try:
+            screen_recorder()
         except:
             talk('Sorry, this function is unavailable at the moment')
     else:
