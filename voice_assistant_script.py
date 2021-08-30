@@ -673,6 +673,7 @@ def running_james():
             talk("Okay, sir.")
             pass
 
+
 # James Execution
 def james_exec():
     talk("I'm on, sir.")
