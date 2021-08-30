@@ -673,7 +673,6 @@ def running_james():
             talk("Okay, sir.")
             pass
 
-
 # James Execution
 def james_exec():
     talk("I'm on, sir.")
@@ -686,15 +685,22 @@ def james_exec():
             shutdown(call)
         elif "take a nap" in call:
             talk('See you later, sir.')
-            quit()
+            return 'sleep'
         elif wake_word(call):
             running_james()
 
 
 # Main
 if __name__ == '__main__':
-    while True:
+    looping = True
+    while looping:
         try:
-            james_exec()
+            james_do = james_exec()
+            print(james_do)
+            if james_do == 'sleep':
+                looping = False
         except:
-            talk('Reconnecting, sir.')
+            if looping:
+                talk('Reconnecting, sir.')
+            else:
+                pass
