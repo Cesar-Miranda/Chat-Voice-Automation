@@ -474,18 +474,24 @@ def news(text):
 
 # AI chat
 def bot_chat():
+    talk('Okay, what would you like to talk about?')
     in_conversation = True
-    talk('Okay, what would like to talk about?')
     while in_conversation:
         conv1_start = take_command()
         conv1 = Conversation(conv1_start)
-        talk(f'Bot: {conversational_pipeline([conv1])}')
+        bot_speaks = str(conversational_pipeline([conv1]))
+        speak_starts = int(bot_speaks.find('bot >>')) + 7
+        talk(f"Bot: {bot_speaks[speak_starts:]}")
         if conv1_start == 'goodbye':
             in_conversation = False
             break
         conv1_next = take_command()
         conv1.add_user_input(conv1_next)
-        talk(f'Bot: {conversational_pipeline([conv1])}')
+        bot_speaks = str(conversational_pipeline([conv1]))
+        speak_starts = int(bot_speaks.find('bot >>')) + 7
+        bot_speaks = bot_speaks[speak_starts:]
+        speak_starts = int(bot_speaks.find('bot >>')) + 7
+        talk(f"Bot: {bot_speaks[speak_starts:]}")
         if conv1_next == 'goodbye':
             in_conversation = False
             break
