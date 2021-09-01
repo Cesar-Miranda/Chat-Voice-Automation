@@ -26,6 +26,9 @@ from PIL import ImageGrab
 import numpy as np
 import cv2
 from win32api import GetSystemMetrics
+from transformers import pipeline, Conversation
+
+conversational_pipeline = pipeline("conversational")
 
 # BASIC FUNCTIONS
 
@@ -469,6 +472,25 @@ def news(text):
         talk('I could not find any news about' + text)
 
 
+# AI chat
+def bot_chat():
+    in_conversation = True
+    talk('Okay, what would like to talk about?')
+    while in_conversation:
+        conv1_start = take_command()
+        conv1 = Conversation(conv1_start)
+        talk(f'Bot: {conversational_pipeline([conv1])}')
+        if conv1_start == 'goodbye':
+            in_conversation = False
+            break
+        conv1_next = take_command()
+        conv1.add_user_input(conv1_next)
+        talk(f'Bot: {conversational_pipeline([conv1])}')
+        if conv1_next == 'goodbye':
+            in_conversation = False
+            break
+
+
 # tell me all the commands
 def tell_me_all_commands():
     print(""" Those are the commands you can use:
@@ -643,6 +665,11 @@ def run_james(order):
     elif "record the screen" in command:
         try:
             screen_recorder()
+        except:
+            talk('Sorry, this function is unavailable at the moment')
+    elif 'lets talk' in command:
+        try:
+            bot_chat()
         except:
             talk('Sorry, this function is unavailable at the moment')
     else:
