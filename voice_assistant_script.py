@@ -3,7 +3,9 @@ import speech_recognition as sr
 import pyttsx3
 import pywhatkit
 import datetime
+from datetime import datetime as dt
 import time
+from time import sleep as slp
 import wikipedia
 import pyjokes
 import os
@@ -26,9 +28,12 @@ from PIL import ImageGrab
 import numpy as np
 import cv2
 from win32api import GetSystemMetrics
-from transformers import pipeline, Conversation
+# from transformers import pipeline, Conversation
 
-conversational_pipeline = pipeline("conversational")
+# conversational_pipeline = pipeline("conversational")
+
+# import matplotlib.pyplot as plt
+# import win32com.client
 
 # BASIC FUNCTIONS
 
@@ -273,6 +278,14 @@ def open_mail():
     pyautogui.write("mail")
     time.sleep(2)
     pyautogui.press("enter")
+    time.sleep(2)
+    urls = (
+        "https://mail.google.com/mail/u/0/#inbox",
+        "https://mail.google.com/mail/u/5/#inbox"
+    )
+    for url in urls:
+        webbrowser.open(url, new=1)
+
     talk("E-mail is ready")
 
 
@@ -303,55 +316,86 @@ def screenshot():
 
 
 # work setups
-def kumon():
+def freelancer():
+    week_day = dt.today().strftime('%A')
+    hour = dt.now().hour
     first = True
-    os.startfile("C:\Program Files\Google\Chrome\Application\chrome.exe")
-    urls = (
+
+    urls_desenvolver = (
         "https://...",
         "http://...",
         "http://...",
         "http://..."
     )
-    for url in urls:
-        if first:
-            webbrowser.open(url)
-            first = False
-        else:
-            webbrowser.open(url, new=2)
-    time.sleep(3)
-    pyautogui.hotkey("ctrl", "1")
-    time.sleep(2)
-    pyautogui.hotkey("ctrl", "f4")
-    talk("Kumon setup is ready.")
 
-
-def desenvolver():
-    first = True
-    os.startfile("C:\Program Files\Google\Chrome\Application\chrome.exe")
-    urls = (
-        "https://...",
+    urls_segunda = (
         "https://...",
         "http://...",
-        "https://...,
-        "https://..."
+        "http://...",
+        "http://..."
     )
-    for url in urls:
-        if first:
-            webbrowser.open(url)
-            first = False
+
+    urls_terca = (
+        "https://...",
+        "http://...",
+        "http://...",
+        "http://..."
+    )
+
+    urls_quinta = (
+        "https://...",
+        "http://...",
+        "http://...",
+        "http://..."
+    )
+
+    urls_sabado = (
+        "https://...",
+        "http://...",
+        "http://...",
+        "http://..."
+    )
+
+    abrir_urls = True
+
+    if hour >= 15 and hour < 18 and week_day in 'MondayTuesdayWednesdayThursdayFriday':
+        urls = urls_desenvolver
+    elif week_day == 'Monday' and hour > 18:
+        urls = urls_segunda
+    elif week_day == "Tuesday" and hour > 18:
+        urls = urls_terca
+    elif week_day == 'Thursday' and hour > 18:
+        urls = urls_quinta
+    elif week_day == 'Saturday' and hour > 10 and hour < 12:
+        urls = urls_sabado
+    else:
+        abrir_urls = False
+
+    while abrir_urls:
+        os.startfile("C:\Program Files\Google\Chrome\Application\chrome.exe")
+        for url in urls:
+            if first:
+                webbrowser.open(url)
+                first = False
+            else:
+                webbrowser.open(url, new=2)
+        if abrir_urls:
+            slp(3)
+            pyautogui.hotkey("ctrl", "1")
+            slp(2)
+            pyautogui.hotkey("ctrl", "f4")
+            talk('Freelancer setup ')
         else:
-            webbrowser.open(url, new=2)
-    time.sleep(3)
-    pyautogui.hotkey("ctrl", "1")
-    time.sleep(2)
-    pyautogui.hotkey("ctrl", "f4")
-    talk("Desenvolver setup is ready.")
+            pass
+
+        abrir_urls = False
 
 # conveniences
 def gkeep():
     url = "https://keep.google.com/u/0/"
     webbrowser.open(url, new=1)
     talk("Google Keep is ready.")
+
 
 def screen_recorder():
     talk('Pause with P key when needed. Five seconds to start.')
@@ -385,8 +429,6 @@ def screen_recorder():
     source = f"Screen Record - {day_hour}.mp4"
     destination = "C:\\Users\Cesar\\Videos\\Captures"
     shutil.move(source, destination)
-
-
 
 # today's quotations
 def get_quotation(text):
@@ -471,9 +513,12 @@ def news(text):
     else:
         talk('I could not find any news about' + text)
 
+# error case
+def error_case():
+    talk('Sorry, this function is unavailable at the moment')
 
-# AI chat
-def bot_chat():
+# AI chat - temporarly removed
+"""def bot_chat():
     talk('Okay, what would you like to talk about?')
     in_conversation = True
     while in_conversation:
@@ -481,7 +526,7 @@ def bot_chat():
         conv1 = Conversation(conv1_start)
         bot_speaks = str(conversational_pipeline([conv1]))
         speak_starts = int(bot_speaks.find('bot >>')) + 7
-        talk(f"Bot: {bot_speaks[speak_starts:]}")
+        talk(f"{bot_speaks[speak_starts:]}")
         if conv1_start == 'goodbye':
             in_conversation = False
             break
@@ -491,41 +536,14 @@ def bot_chat():
         speak_starts = int(bot_speaks.find('bot >>')) + 7
         bot_speaks = bot_speaks[speak_starts:]
         speak_starts = int(bot_speaks.find('bot >>')) + 7
-        talk(f"Bot: {bot_speaks[speak_starts:]}")
+        talk(f"{bot_speaks[speak_starts:]}")
         if conv1_next == 'goodbye':
             in_conversation = False
             break
-
+"""
 
 # tell me all the commands
 def tell_me_all_commands():
-    print(""" Those are the commands you can use:
-        weather
-        play
-        time
-        search for
-        joke
-        shutdown
-        turn off
-        volume up
-        volume down
-        close window
-        switch window
-        open mail
-        read mail
-        kill tab
-        switch tab
-        screenshot
-        full mode
-        pause
-        resume
-        game
-        close
-        set up kumon
-        start desenvolver mais
-        quotation
-        tell me all commands
-    """)
     talk("""Those are the commands you can use:
         weather
         play
@@ -548,10 +566,10 @@ def tell_me_all_commands():
         resume
         game
         close
-        set up kumon
-        start desenvolver mais
+        freelancer setup
         quotation
         tell me all commands
+        record the screen
   """)
 
 
@@ -562,122 +580,112 @@ def run_james(order):
         try:
             weather(command)
         except:
-            talk('Sorry, this function is unavailable at the moment')
+            error_case()
     elif 'play' in command:
         try:
             playing(command)
         except:
-            talk('Sorry, this function is unavailable at the moment')
+            error_case()
     elif ('time' or 'hour') in command:
         try:
             what_hour()
         except:
-            talk('Sorry, this function is unavailable at the moment')
+            error_case()
     elif 'search for' in command:
         try:
             search_wiki(command)
         except:
-            talk('Sorry, this function is unavailable at the moment')
+            error_case()
     elif 'joke' in command:
         try:
             talk(pyjokes.get_joke())
         except:
-            talk('Sorry, this function is unavailable at the moment')
+            error_case()
     elif shutdown(command):
         try:
             shutdown(command)
         except:
-            talk('Sorry, this function is unavailable at the moment')
+            error_case()
     elif "volume" in command:
         try:
             volume_control(command)
         except:
-            talk('Sorry, this function is unavailable at the moment')
+            error_case()
     elif "light" in command:
         try:
             light_control(command)
         except:
-            talk('Sorry, this function is unavailable at the moment')
+            error_case()
     elif ("screenshot") in command:
         try:
             screenshot()
         except:
-            talk('Sorry, this function is unavailable at the moment')
+            error_case()
     elif ("resume" or "pause") in command:
         try:
             resume_pause()
         except:
-            talk('Sorry, this function is unavailable at the moment')
+            error_case()
     elif "game" in command:
         try:
             brawlhalla()
         except:
-            talk('Sorry, this function is unavailable at the moment')
+            error_case()
     elif "open mail" in command:
         try:
             open_mail()
         except:
-            talk('Sorry, this function is unavailable at the moment')
+            error_case()
     elif "close" in command:
         try:
             close_window()
         except:
-            talk('Sorry, this function is unavailable at the moment')
+            error_case()
     elif "kill tab" in command:
         try:
             kill_tab()
         except:
-            talk('Sorry, this function is unavailable at the moment')
+            error_case()
     elif "switch window" in command:
         try:
             switch_window()
         except:
-            talk('Sorry, this function is unavailable at the moment')
-    elif ('set up' or 'kumon') in command:
+            error_case()
+    elif ('set up' or 'freelancer') in command:
         try:
-            kumon()
+            freelancer()
         except:
-            talk('Sorry, this function is unavailable at the moment')
-    elif ('start' or 'desenvolver' or 'mais') in command:
-        try:
-            desenvolver()
-        except:
-            talk('Sorry, this function is unavailable at the moment')
+            error_case()
     elif "quotation" in command:
         try:
             get_quotation(command)
         except:
-            talk('Sorry, this function is unavailable at the moment')
+            error_case()
     elif "news" in command:
         try:
             news(command)
         except:
-            talk('Sorry, this function is unavailable at the moment')
+            error_case()
     elif 'commands' in command:
         try:
             tell_me_all_commands()
         except:
-            talk('Sorry, this function is unavailable at the moment')
+            error_case()
     elif "full" in command:
         try:
             full_screen()
         except:
-            talk('Sorry, this function is unavailable at the moment')
+            error_case()
     elif "open notes" in command:
         try:
             gkeep()
         except:
-            talk('Sorry, this function is unavailable at the moment')
+            error_case()
     elif "record the screen" in command:
         try:
             screen_recorder()
         except:
-            talk('Sorry, this function is unavailable at the moment')
-    elif 'lets talk' in command:
-        try:
-            bot_chat()
-        except:
-            talk('Sorry, this function is unavailable at the moment')
+            error_case()
     else:
         talk("Sorry, I didn't understand what you said.")
 
