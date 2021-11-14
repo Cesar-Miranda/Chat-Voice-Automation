@@ -3,37 +3,30 @@ import speech_recognition as sr
 import pyttsx3
 import pywhatkit
 import datetime
-from datetime import datetime as dt
-import time
 from time import sleep as slp
 import wikipedia
 import pyjokes
 import os
-import sys
 import warnings
 import pyautogui
 import shutil
 import webbrowser
 import requests
-import json
 import wmi
-import pandas as pd
 import scrapy
-import Scrapy_crawler
 from scrapy.crawler import CrawlerProcess
-from pandas_datareader import data as web
 from GoogleNews import GoogleNews
 from googletrans import Translator
 from PIL import ImageGrab
 import numpy as np
 import cv2
 from win32api import GetSystemMetrics
-# from transformers import pipeline, Conversation
+from datetime import datetime as dt
+import pyperclip
+import imaplib
+import email
+from email.header import decode_header
 
-# conversational_pipeline = pipeline("conversational")
-
-# import matplotlib.pyplot as plt
-# import win32com.client
 
 # BASIC FUNCTIONS
 
@@ -67,8 +60,8 @@ def take_wake_word():
     while True:
         try:
             with sr.Microphone() as source:
-                listener.adjust_for_ambient_noise(source, duration=0.2)
-                voice = listener.listen(source, phrase_time_limit=2)
+                listener.adjust_for_ambient_noise(source, duration=0.1)
+                voice = listener.listen(source, phrase_time_limit=3)
                 command = listener.recognize_google(voice)
                 command = command.lower()
                 return command
@@ -76,7 +69,7 @@ def take_wake_word():
             pass
         except sr.RequestError:
             talk("Something went wrong, sir.")
-            time.sleep(10)
+            slp(10)
 
 
 # take command
@@ -84,8 +77,8 @@ def take_command():
     while True:
         try:
             with sr.Microphone() as source:
-                listener.adjust_for_ambient_noise(source, duration=0.2)
-                voice = listener.listen(source, phrase_time_limit=5)
+                listener.adjust_for_ambient_noise(source, duration=0.1)
+                voice = listener.listen(source, phrase_time_limit=6)
                 command = listener.recognize_google(voice)
                 command = command.lower()
                 if 'james' in command:
@@ -95,10 +88,26 @@ def take_command():
             pass
         except sr.RequestError:
             talk("Something went wrong, sir.")
-            time.sleep(10)
+            slp(30)
 
 
 # [SKILLS]
+
+"""
+Ideas for James
+- weather prediction for the coming days
+- read newsletters
+- make James bylingual pt eng - he should detect the language used to talk to him and response properly
+- write an event on a calendar with alarms
+- Taking writen notes on google keep through voice
+- create a inbox notifications with my warnings with priority scale
+- urgency e-mails immediately announced 
+- Personalized Speech recognition (pytorch)
+- Making it able to work on android or IoT devices
+- warns when my favorite youtubers post new videos
+- read pdf
+- Make it play some games (with and against me)
+"""
 
 
 # weather today
@@ -276,17 +285,27 @@ def brawlhalla():
 def open_mail():
     pyautogui.hotkey("win")
     pyautogui.write("mail")
-    time.sleep(2)
+    slp(2)
     pyautogui.press("enter")
-    time.sleep(2)
+    slp(2)
     urls = (
-        "https://mail.google.com/mail/u/0/#inbox",
-        "https://mail.google.com/mail/u/5/#inbox"
+        "...",
+        "..."
     )
     for url in urls:
         webbrowser.open(url, new=1)
 
     talk("E-mail is ready")
+
+
+"""
+def read_mail():
+    outlook = win32com.client.Dispatch("Outlook.Appilication").GetNamespace("MAPI")
+    inbox = outlook.GetDefaultFolder(6)
+    messages = inbox.Items
+    message = messages.GetLast()
+    talk(message.subject)
+"""
 
 
 # windows and tabs management
@@ -321,58 +340,67 @@ def freelancer():
     hour = dt.now().hour
     first = True
 
-    urls_desenvolver = (
-        "https://...",
-        "http://...",
-        "http://...",
-        "http://..."
+    urls_d = (
+        "...",
+        "...",
+        "...",
+        "...",
+        "..."
     )
 
     urls_segunda = (
-        "https://...",
-        "http://...",
-        "http://...",
-        "http://..."
+        "...",
+        "...",
+        "...",
+        "...",
+        "..."
     )
 
     urls_terca = (
-        "https://...",
-        "http://...",
-        "http://...",
-        "http://..."
+        "...",
+        "...",
+        "...",
+        "...",
+        "...",
+        "..."
     )
 
     urls_quinta = (
-        "https://...",
-        "http://...",
-        "http://...",
-        "http://..."
+        "...",
+        "...",
+        "...",
+        "...",
+        "...",
+        "...",
+        "...",
+        "..."
     )
 
     urls_sabado = (
-        "https://...",
-        "http://...",
-        "http://...",
-        "http://..."
+        "...",
+        "...",
+        "...",
+        "...",
+        "..."
     )
 
     abrir_urls = True
 
-    if hour >= 15 and hour < 18 and week_day in 'MondayTuesdayWednesdayThursdayFriday':
-        urls = urls_desenvolver
-    elif week_day == 'Monday' and hour > 18:
+    if hour < 18 and week_day in 'MondayTuesdayWednesdayThursdayFriday':
+        urls = urls_d
+    elif week_day == 'Monday' and hour >= 18:
         urls = urls_segunda
-    elif week_day == "Tuesday" and hour > 18:
+    elif week_day == "Tuesday" and hour >= 18:
         urls = urls_terca
-    elif week_day == 'Thursday' and hour > 18:
+    elif week_day == 'Thursday' and hour >= 18:
         urls = urls_quinta
-    elif week_day == 'Saturday' and hour > 10 and hour < 12:
+    elif week_day == 'Saturday' and hour >= 10 and hour < 12:
         urls = urls_sabado
     else:
         abrir_urls = False
 
     while abrir_urls:
-        os.startfile("C:\Program Files\Google\Chrome\Application\chrome.exe")
+        os.startfile("...")
         for url in urls:
             if first:
                 webbrowser.open(url)
@@ -384,15 +412,147 @@ def freelancer():
             pyautogui.hotkey("ctrl", "1")
             slp(2)
             pyautogui.hotkey("ctrl", "f4")
-            talk('Freelancer setup ')
+        else:
+            pass
+        abrir_urls = False
+
+
+def clean(text):
+    # clean text for creating a folder
+    return "".join(c if c.isalnum() else "_" for c in text)
+
+
+# work setup
+def set_up():
+    week_day = dt.today().strftime('%A')
+    hour = dt.now().hour
+    first = True
+
+    password = '...'
+    username = '...'
+    password_vpn = '...'
+    pyperclip.copy(password_vpn)
+    pos_password_vpn = (877, 701)
+    pos_code_mail = (872, 767)
+
+    urls = (
+        "...",
+        "...",
+        "..."
+    )
+
+    open_urls = True
+
+    if hour < 16 and week_day in 'MondayTuesdayWednesdayThursdayFriday':
+        urls2 = urls
+    else:
+        open_urls = False
+
+    while open_urls:
+        os.startfile(r'...')
+        os.startfile(r'...')
+        for url in urls2:
+            if first:
+                webbrowser.open(url)
+                first = False
+            else:
+                webbrowser.open(url, new=2)
+        if open_urls:
+            slp(3)
+            pyautogui.hotkey("ctrl", "1")
+            slp(2)
+            pyautogui.hotkey("ctrl", "f4")
         else:
             pass
 
-        abrir_urls = False
+        slp(5)
+        pyautogui.hotkey("alt", "tab", "tab", "tab")
+        slp(2)
+        pyautogui.click(pos_password_vpn, clicks=1)
+        password_vpn = '...'
+        pyperclip.copy(password_vpn)
+        pyautogui.hotkey("ctrl", "v")
+        pyautogui.hotkey("enter")
+        slp(15)
+        imap = imaplib.IMAP4_SSL("....")
+        imap.login(username, password)
+        status, messages = imap.select("...")
+        N = 1
+        messages = int(messages[0])
+        for i in range(messages, messages - N, -1):
+            res, msg = imap.fetch(str(i), "(RFC822)")
+        for response in msg:
+            if isinstance(response, tuple):
+                msg = email.message_from_bytes(response[1])
+                subject, encoding = decode_header(msg["Subject"])[0]
+                if isinstance(subject, bytes):
+                    subject = subject.decode(encoding)
+                From, encoding = decode_header(msg.get("From"))[0]
+                if isinstance(From, bytes):
+                    From = From.decode(encoding)
+                if msg.is_multipart():
+                    for part in msg.walk():
+                        content_type = part.get_content_type()
+                        content_disposition = str(part.get("Content-Disposition"))
+                        try:
+                            body = part.get_payload(decode=True).decode()
+                        except:
+                            pass
+                        if content_type == "text/plain" and "attachment" not in content_disposition:
+                            code = str(body)[-7:].replace('.', '')
+                        elif "attachment" in content_disposition:
+                            filename = part.get_filename()
+                            if filename:
+                                folder_name = clean(subject)
+                                if not os.path.isdir(folder_name):
+                                    os.mkdir(folder_name)
+                                filepath = os.path.join(folder_name, filename)
+                                open(filepath, "wb").write(part.get_payload(decode=True))
+                else:
+                    content_type = msg.get_content_type()
+                    body = msg.get_payload(decode=True).decode()
+                    if content_type == "text/plain":
+                        print(body)
+                        code = str(body)[-11:].strip().replace('.', '')
+        imap.close()
+        imap.logout()
+        pyautogui.click(pos_code_mail, clicks=1)
+        pyperclip.copy(code)
+        pyautogui.hotkey("ctrl", "v")
+        pyautogui.hotkey("enter")
+        slp(5)
+        os.startfile(r'...')
+        os.startfile(r'...')
+
+        open_urls = False
+
+
+# Scheduled_tasks
+def scheduled():
+    week_day = dt.today().strftime('%A')
+    hour =  f'{dt.now().hour}:{dt.now().minute}'
+    if week_day in 'MondayTuesdayWednesdayThursdayFriday' and hour == '15:0':
+        freelancer()
+        slp(60)
+    elif week_day == 'Saturday' and hour == '10:0':
+        freelancer()
+        slp(60)
+    elif week_day in 'MondayTuesdayWednesdayThursdayFriday' and hour == '9:0':
+        work_set_up()
+        slp(60)
+    elif week_day in 'MondayTuesdayWednesdayThursdayFriday' and hour == '10:0':
+        talk("It's almost in time for the daily meeting, sir.")
+    elif week_day in 'MondayTuesdayWednesdayThursdayFriday' and hour == '10:10':
+        talk("It's almost in time for the daily meeting, sir.")
+    elif week_day in 'MondayTuesdayWednesdayThursdayFriday' and hour == '10:15':
+        talk("It's time for the daily meeting, sir.")
+    else:
+        pass
+
 
 # conveniences
 def gkeep():
-    url = "https://keep.google.com/u/0/"
+    url = "https://keep.google.com"
     webbrowser.open(url, new=1)
     talk("Google Keep is ready.")
 
@@ -400,15 +560,15 @@ def gkeep():
 def screen_recorder():
     talk('Pause with P key when needed. Five seconds to start.')
     talk('five')
-    time.sleep(1)
+    slp(1)
     talk('four')
-    time.sleep(1)
+    slp(1)
     talk('three')
-    time.sleep(1)
+    slp(1)
     talk('two')
-    time.sleep(1)
+    slp(1)
     talk('one')
-    time.sleep(1)
+    slp(1)
     talk('now')
 
     width = GetSystemMetrics(0)
@@ -461,6 +621,18 @@ def get_quotation(text):
             i += 1
 
 
+"""
+# Historical quotation
+def historical_quotation(text):
+    cad_quotation = web.DataReader('CADBRL=X', data_source='yahoo', start="12-01-2020", end="07-12-2021")
+    dol_quotation = web.DataReader('BRL=X', data_source='yahoo', start="12-01-2020", end="07-12-2021")
+    eur_quotation = web.DataReader('EURBRL=X', data_source='yahoo', start="12-01-2020", end="07-12-2021")
+    cny_quotation = web.DataReader('CNYBRL=X', data_source='yahoo', start="12-01-2020", end="07-12-2021")
+    btc_quotation = web.DataReader('BTCBRL=X', data_source='yahoo', start="12-01-2020", end="07-12-2021")
+    eth_quotation = web.DataReader('ETHBRL=X', data_source='yahoo', start="12-01-2020", end="07-12-2021")
+"""
+
+
 # News reading
 def news(text):
     text = text.replace('news', "")
@@ -471,20 +643,20 @@ def news(text):
 
     def news_reading():
         talk('The title is:')
-        time.sleep(1)
+        slp(1)
         talk(x['title'])
-        time.sleep(1)
+        slp(1)
         talk('Description:')
-        time.sleep(1)
+        slp(1)
         talk(x['desc'])
 
     def leitura_noticias():
         talk('O título da notícia é:')
-        time.sleep(1)
+        slp(1)
         talk(x['title'])
-        time.sleep(1)
+        slp(1)
         talk('Descrição:')
-        time.sleep(1)
+        slp(1)
         talk(x['desc'])
 
     if "in portuguese" in text:
@@ -517,7 +689,7 @@ def news(text):
 def error_case():
     talk('Sorry, this function is unavailable at the moment')
 
-# AI chat - temporarly removed
+# AI chat
 """def bot_chat():
     talk('Okay, what would you like to talk about?')
     in_conversation = True
@@ -656,6 +828,11 @@ def run_james(order):
             freelancer()
         except:
             error_case()
+    elif 'work' or 'begin' in command:
+        try:
+            work()
+        except:
+            error_case()
     elif "quotation" in command:
         try:
             get_quotation(command)
@@ -719,6 +896,9 @@ def running_james():
 def james_exec():
     talk("I'm on, sir.")
     while True:
+        # checking schedule
+        scheduled()
+
         # taking the wake word
         call = take_wake_word()
 
