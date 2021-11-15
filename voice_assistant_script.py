@@ -747,124 +747,57 @@ def tell_me_all_commands():
 
 # Core of commands
 def run_james(order):
-    command = order
-    if 'weather' in command:
-        try:
-            weather(command)
-        except:
-            error_case()
-    elif 'play' in command:
-        try:
-            playing(command)
-        except:
-            error_case()
-    elif ('time' or 'hour') in command:
-        try:
+    try:
+        if 'weather' in order:
+            weather(order)
+        elif 'play' in order:
+            playing(order)
+        elif ('time' or 'hour') in order:
             what_hour()
-        except:
-            error_case()
-    elif 'search for' in command:
-        try:
-            search_wiki(command)
-        except:
-            error_case()
-    elif 'joke' in command:
-        try:
+        elif 'search for' in order:
+            search_wiki(order)
+        elif 'joke' in order:
             talk(pyjokes.get_joke())
-        except:
-            error_case()
-    elif shutdown(command):
-        try:
-            shutdown(command)
-        except:
-            error_case()
-    elif "volume" in command:
-        try:
-            volume_control(command)
-        except:
-            error_case()
-    elif "light" in command:
-        try:
-            light_control(command)
-        except:
-            error_case()
-    elif ("screenshot") in command:
-        try:
+        elif shutdown(order):
+            shutdown(order)
+        elif "volume" in order:
+            volume_control(order)
+        elif "light" in order:
+            light_control(order)
+        elif ("screenshot") in order:
             screenshot()
-        except:
-            error_case()
-    elif ("resume" or "pause") in command:
-        try:
+        elif ("resume" or "pause") in order:
             resume_pause()
-        except:
-            error_case()
-    elif "game" in command:
-        try:
+        elif "game" in order:
             brawlhalla()
-        except:
-            error_case()
-    elif "open mail" in command:
-        try:
+        elif "open mail" in order:
             open_mail()
-        except:
-            error_case()
-    elif "close" in command:
-        try:
+        elif "close" in order:
             close_window()
-        except:
-            error_case()
-    elif "kill tab" in command:
-        try:
+        elif "kill tab" in order:
             kill_tab()
-        except:
-            error_case()
-    elif "switch window" in command:
-        try:
+        elif "switch window" in order:
             switch_window()
-        except:
-            error_case()
-    elif ('set up' or 'freelancer') in command:
-        try:
+        elif ('set up' or 'freelancer') in order:
             freelancer()
-        except:
-            error_case()
-    elif 'work' or 'begin' in command:
-        try:
+        elif 'work' or 'begin' in order:
             work()
-        except:
-            error_case()
-    elif "quotation" in command:
-        try:
-            get_quotation(command)
-        except:
-            error_case()
-    elif "news" in command:
-        try:
-            news(command)
-        except:
-            error_case()
-    elif 'commands' in command:
-        try:
+        elif "quotation" in order:
+            get_quotation(order)
+        elif "news" in order:
+            news(order)
+        elif 'commands' in order:
             tell_me_all_commands()
-        except:
-            error_case()
-    elif "full" in command:
-        try:
+        elif "full" in order:
             full_screen()
-        except:
-            error_case()
-    elif "open notes" in command:
-        try:
+        elif "open notes" in order:
             gkeep()
-        except:
-            error_case()
-    elif "record the screen" in command:
-        try:
+        elif "record the screen" in order:
             screen_recorder()
-        except:
-            error_case()
-    else:
-        talk("Sorry, I didn't understand what you said.")
+        else:
+            talk("Sorry, I didn't understand what you said.")
+    except:
+        error_case()
 
 
 # Running James
